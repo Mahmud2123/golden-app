@@ -212,7 +212,7 @@ const Home = () => {
             </div>
             <div className="text-center my-2 py-4 border-y border-[#222]">
               <Link to="/scan" className="text-[#888] no-underline text-xs font-bold tracking-widest uppercase hover:text-[#00ff41] transition-colors inline-flex items-center gap-2 group">
-                <span>📷</span> Switch to Scanner <span className="inline-block transition-transform group-hover:translate-x-1 text-[#00ff41]">→</span>
+                <span>📷</span> USE SCAN TO CHECK BALANCE INSTEAD <span className="inline-block transition-transform group-hover:translate-x-1 text-[#00ff41]">→</span>
               </Link>
             </div>
           <button 
