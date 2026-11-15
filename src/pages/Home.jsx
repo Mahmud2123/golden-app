@@ -315,9 +315,9 @@ const Home = () => {
         <div className="bg-[#0a0a0a] border border-[#222] p-6 sm:p-8 shadow-2xl relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-50"></div>
           
-          <h2 className="text-white text-center text-lg sm:text-xl mb-8 font-black tracking-widest uppercase flex items-center justify-center gap-2">
+          {/* <h2 className="text-white text-center text-lg sm:text-xl mb-8 font-black tracking-widest uppercase flex items-center justify-center gap-2">
             <span className="text-[#00ff41] animate-pulse">⬢</span> Terminal Access
-          </h2>
+          </h2> */}
 
           <div className="space-y-6">
             <CardInput value={cardNumber} onChange={(e) => formatCardNumber(e.target.value)} disabled={loading} attemptCount={attemptCount} />
