@@ -19,7 +19,6 @@ const LegalDisclaimer = () => {
           <span className="text-[#333] hidden sm:block">|</span>
           <a href="/terms" className="hover:text-[#00ff41] transition-colors">Terms of Service</a>
           <span className="text-[#333] hidden sm:block">|</span>
-          <span>Demo v1.0</span>
         </div>
       </div>
     </div>
