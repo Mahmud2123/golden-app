@@ -215,16 +215,22 @@ const Home = () => {
                 <span>📷</span> Switch to Scanner <span className="inline-block transition-transform group-hover:translate-x-1 text-[#00ff41]">→</span>
               </Link>
             </div>
-            <button onClick={handleCheckBalance} disabled={loading || !isCardValid || !isAmountValid}
-              className={`w-full py-4 font-black text-sm uppercase tracking-[0.2em] transition-all duration-300 ${loading || !isCardValid || !isAmountValid ? 'bg-[#111] text-[#555] cursor-not-allowed border border-[#333]' : 'bg-[#00ff41] text-black hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98]'}`}
-              style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}
-            >
-              {loading ? 'Verifying...' : attemptCount === 1 ? 'Retry Check' : 'Initiate Check'}
-            </button>
+           <button 
+  onClick={handleCheckBalance} 
+  disabled={loading || !isCardValid || !isAmountValid}
+  className={`w-full py-4 font-black text-sm uppercase tracking-[0.2em] transition-all duration-300 ${
+    loading || !isCardValid || !isAmountValid 
+      ? 'bg-[#111] text-[#555] cursor-not-allowed border border-[#333]' 
+      : 'bg-[#00ff41] text-black hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98]'
+  }`}
+  style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}
+>
+  {loading ? 'Verifying...' : 'Check Balance'}
+</button>
             {error && <StatusMessage type={error.includes('NOT') || error.includes('mismatch') ? 'error' : 'warning'} message={error} />}
           </div>
         </div>
-        <div className="mt-8"><FeaturedRewards /></div>
+        {/* <div className="mt-8"><FeaturedRewards /></div> */}
       </div>
       <LegalDisclaimer />
     </>

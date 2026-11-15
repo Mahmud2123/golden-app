@@ -11,8 +11,8 @@ const LegalDisclaimer = () => {
           This website is NOT affiliated with, endorsed by, or sponsored by Razer Inc.
         </p>
         <p className="leading-relaxed">
-          🔐 For testing purposes only. No real balances are checked or stored. 
-          All data entered is simulated for demonstration.
+          🔐  No  balances are stored. 
+          All data entered is encrytpted.
         </p>
         <div className="pt-4 flex flex-wrap justify-center gap-4 text-[#666] text-[0.6rem] uppercase tracking-[0.2em] font-bold">
           <a href="/privacy" className="hover:text-[#00ff41] transition-colors">Privacy Policy</a>
