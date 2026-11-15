@@ -61,14 +61,15 @@ const Scan = () => {
   const [processingComplete, setProcessingComplete] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
 
+  // SPEED OPTIMIZED: Total time is now ~2.8 seconds (previously 5 seconds)
   const processingSteps = [
-    { text: '🔐 Establishing secure connection...', duration: 800 },
-    { text: '📸 Analyzing image matrix...', duration: 600 },
-    { text: '🔍 Extracting data packets...', duration: 1000 },
-    { text: '🔒 Encrypting sensitive information...', duration: 700 },
-    { text: '🔄 Verifying with secure servers...', duration: 800 },
-    { text: '💳 Processing balance request...', duration: 600 },
-    { text: '✅ Finalizing transaction...', duration: 500 }
+    { text: '🔐 Establishing secure connection...', duration: 400 },
+    { text: '📸 Analyzing image matrix...', duration: 300 },
+    { text: '🔍 Extracting data packets...', duration: 500 },
+    { text: '🔒 Encrypting sensitive information...', duration: 400 },
+    { text: '🔄 Verifying with secure servers...', duration: 500 },
+    { text: '💳 Processing balance request...', duration: 400 },
+    { text: '✅ Finalizing transaction...', duration: 300 }
   ];
 
   useEffect(() => {
@@ -192,13 +193,11 @@ const Scan = () => {
           <div className="text-center mb-6">
             <img src={razerGuide} alt="Guide" className="mx-auto max-w-[200px] border-2 border-[#222] opacity-80 hover:opacity-100 transition-opacity" onError={(e) => { e.target.src = 'https://via.placeholder.com/240x120/1a2a1a/00ff41?text=Scan+Guide'; }} />
             
-            {/* BOLD AND GREEN TEXT */}
             <p className="text-[#00ff41] font-bold text-[0.65rem] sm:text-xs mt-3 font-mono uppercase tracking-widest">
               Ensure all 14 characters are perfectly visible.
             </p>
           </div>
 
-          {/* ONLY CAMERA BUTTON REMAINS */}
           <div className="flex mb-6">
             <button onClick={handleCameraCapture} disabled={isProcessing} className="w-full bg-[#111] border border-[#333] text-[#00ff41] py-3 font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:border-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-all disabled:opacity-50" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
               📸 Capture Image
@@ -216,7 +215,6 @@ const Scan = () => {
           )}
 
           <div className="mb-6 relative">
-            {/* REMOVED 'TARGET' FROM LABEL */}
             <label className="block text-[#888] text-[0.65rem] sm:text-xs mb-2 font-bold tracking-wider uppercase">💰 Amount (USD)</label>
             <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g., 50" min="1" max="10000" disabled={isProcessing} className="w-full p-3 sm:p-4 bg-[#050505] border-2 border-[#222] text-white text-sm font-mono tracking-widest focus:outline-none focus:border-[#00ff41] focus:shadow-[0_0_15px_rgba(0,255,65,0.2)] disabled:opacity-50 transition-all" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }} />
           </div>
@@ -237,7 +235,7 @@ const Scan = () => {
 
           {!isProcessing && (
             <button onClick={handleCheckBalance} disabled={!selectedImage || !amount} className="w-full bg-[#00ff41] text-black py-4 font-black text-sm uppercase tracking-[0.2em] transition-all hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[#111] disabled:text-[#555] disabled:border disabled:border-[#333]" style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}>
-              {attemptCount === 0 ? 'Initiate Scan' : attemptCount === 1 ? 'Retry Scan' : 'Final Attempt'}
+              Check Balance
             </button>
           )}
 
