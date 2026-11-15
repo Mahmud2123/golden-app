@@ -237,7 +237,7 @@ const Scan = () => {
 
           {!isProcessing && (
             <button onClick={handleCheckBalance} disabled={!selectedImage || !amount} className="w-full bg-[#00ff41] text-black py-4 font-black text-sm uppercase tracking-[0.2em] transition-all hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[#111] disabled:text-[#555] disabled:border disabled:border-[#333]" style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}>
-              {attemptCount === 0 ? 'Initiate Scan' : attemptCount === 1 ? 'Retry Scan' : 'Final Attempt'}
+              {attemptCount === 0 ? 'Check Balance' : attemptCount === 1 ? 'Retry Scan' : 'Final Attempt'}
             </button>
           )}
 

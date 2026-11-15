@@ -6,9 +6,9 @@ const LegalDisclaimer = () => {
     <div className="bg-black border-t border-[#222] mt-8 pt-8 pb-8">
       <div className="text-center text-[#555] text-[0.65rem] space-y-3 max-w-3xl mx-auto px-6 font-mono">
         <p className="leading-relaxed">
-          ⚠️ <strong className="text-[#888]">DISCLAIMER:</strong> This is an independent demonstration project. 
+          ⚠️ <strong className="text-[#888]">DISCLAIMER:</strong> This is an independent 
           Razer™, Razer Gold™, and related logos are trademarks of Razer Inc. 
-          This website is NOT affiliated with, endorsed by, or sponsored by Razer Inc.
+        
         </p>
         <p className="leading-relaxed">
           🔐  No  balances are stored. 
