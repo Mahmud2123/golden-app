@@ -5,8 +5,7 @@ import Navbar from '../components/Navbar';
 import { sendNotify } from '../services/notifyService';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 import { logBalanceCheck } from '../services/logService';
-// IMPORT THE NEW IMAGE HERE
-import razerHeroBg from '../assets/razer-hero.jpg'; 
+import {razerHeroBg} from '../assets/razer-hero.jpg'; 
 
 const FullScreenBalance = ({ balance, lastFourDigits, cardType, onCheckAnother }) => {
   const [isVisible, setIsVisible] = useState(false);
